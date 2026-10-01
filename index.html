@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zero Hour Coffee — Recipe Card</title>
+<style>
+  :root {
+    /* Dark theme (default) — single unified black for page + card */
+    --bg: #0c0c0e;
+    --card: #0c0c0e;
+    --ink: #f3efe9;
+    --muted: #9a938b;
+    --accent: #f1191f;      /* brand red */
+    --accent-soft: #2a1416;
+    --line: #242428;
+    --hero: #171719;
+    --hero-frame: #313137;
+    --shadow: none;
+    --card-border: transparent;
+  }
+
+  :root[data-theme="light"] {
+    /* Light theme */
+    --bg: #f4efe9;
+    --card: #ffffff;
+    --ink: #2b211b;
+    --muted: #8a7a6d;
+    --accent: #f1191f;
+    --accent-soft: #fbe0e1;
+    --line: #e6ddd3;
+    --hero: #f1e9e0;
+    --hero-frame: #d8cabb;
+    --shadow: 0 20px 50px rgba(79, 55, 38, 0.18);
+    --card-border: var(--line);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 40px 16px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card {
+    background: var(--card);
+    width: 100%;
+    max-width: 960px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--card-border);
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="light"] .theme-toggle .icon-sun { display: inline; }
+  :root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+  /* Brand header with logo */
+  .brand {
+    display: flex;
+    justify-content: center;
+    padding: 28px 40px 4px;
+  }
+  .brand .logo-badge {
+    width: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand .logo-badge img { width: 100%; height: auto; display: block; }
+  /* Show white logo in dark theme, dark logo in light theme */
+  .brand .logo-badge img.logo-for-light { display: none; }
+  :root[data-theme="light"] .brand .logo-badge img.logo-for-dark { display: none; }
+  :root[data-theme="light"] .brand .logo-badge img.logo-for-light { display: block; }
+
+  /* Hero image — large coffee-bean feature */
+  .hero {
+    position: relative;
+    margin: 20px 40px 0;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--hero);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+  }
+  .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero .placeholder {
+    position: absolute;
+    inset: 14px;
+    border: 2px dashed var(--hero-frame);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+  }
+  .hero .placeholder .icon { font-size: 44px; margin-bottom: 10px; opacity: 0.85; }
+  .hero .placeholder small { margin-top: 5px; opacity: 0.65; font-size: 12px; }
+
+  .content { padding: 36px 40px 44px; }
+
+  .eyebrow {
+    font-family: system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 8px 0 14px;
+    color: var(--ink);
+  }
+
+  .desc { color: var(--muted); font-size: 16px; max-width: 46ch; }
+
+  .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin: 26px 0;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-family: system-ui, sans-serif;
+  }
+  .meta div { font-size: 13px; }
+  .meta .label { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+  .meta .value { color: var(--ink); font-size: 16px; font-weight: 600; margin-top: 3px; }
+
+  .layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 36px; }
+
+  h2 {
+    font-size: 13px;
+    font-family: system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--accent-soft);
+  }
+
+  ul.ingredients { list-style: none; }
+  ul.ingredients li {
+    padding: 7px 0 7px 22px;
+    position: relative;
+    font-size: 15px;
+  }
+  ul.ingredients li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 14px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  ol.steps { list-style: none; counter-reset: step; }
+  ol.steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 16px 40px;
+    font-size: 15px;
+  }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .layout { grid-template-columns: 1fr; gap: 28px; }
+    .content { padding: 28px 24px 34px; }
+    .brand { padding: 24px 24px 0; }
+    h1 { font-size: 28px; }
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; padding: 0; color: #000; }
+    .card { box-shadow: none; border: none; max-width: 100%; border-radius: 0; background: #fff; }
+    .theme-toggle { display: none; }
+    .brand .logo-badge img.logo-for-dark { display: none; }
+    .brand .logo-badge img.logo-for-light { display: block; }
+    .hero { aspect-ratio: auto; height: 320px; }
+    .eyebrow, h2 { color: var(--accent); }
+    .desc, .meta .label { color: #555; }
+    .meta .value, h1, ul.ingredients li, ol.steps li { color: #000; }
+    @page { margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark theme">
+    <span class="icon-moon" aria-hidden="true">🌙</span>
+    <span class="icon-sun" aria-hidden="true">☀️</span>
+    <span class="label">Theme</span>
+  </button>
+
+  <article class="card">
+    <header class="brand">
+      <div class="logo-badge">
+        <img class="logo-for-dark" src="logo-dark.svg" alt="Zero Hour Coffee" />
+        <img class="logo-for-light" src="logo.svg" alt="Zero Hour Coffee" />
+      </div>
+    </header>
+
+    <!-- Replace the div below with: <div class="hero"><img src="beans.jpg" alt="Coffee beans"></div> -->
+    <div class="hero">
+      <div class="placeholder">
+        <span class="icon">🫘</span>
+        Add coffee image
+        <small>replace with beans.jpg</small>
+      </div>
+    </div>
+
+    <div class="content">
+      <p class="eyebrow">Competition Pour-Over</p>
+      <h1>Neo Switch Hybrid</h1>
+      <p class="desc">An advanced immersion-and-percolation brew on the Hario Switch — built for clarity up front and a syrupy, sweet finish. Dial grind to taste; placeholder recipe, swap in your own.</p>
+
+      <div class="meta">
+        <div>
+          <div class="label">Dose</div>
+          <div class="value">16 g</div>
+        </div>
+        <div>
+          <div class="label">Water</div>
+          <div class="value">256 g</div>
+        </div>
+        <div>
+          <div class="label">Ratio</div>
+          <div class="value">1 : 16</div>
+        </div>
+        <div>
+          <div class="label">Temp</div>
+          <div class="value">94 °C</div>
+        </div>
+        <div>
+          <div class="label">Grind</div>
+          <div class="value">Medium-fine</div>
+        </div>
+        <div>
+          <div class="label">Total time</div>
+          <div class="value">3:00</div>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section>
+          <h2>Setup</h2>
+          <ul class="ingredients">
+            <li>16 g light-roast, single origin</li>
+            <li>256 g water at 94 °C</li>
+            <li>Hario Switch + tabbed filter</li>
+            <li>Grind: medium-fine (filter)</li>
+            <li>Gooseneck kettle &amp; scale/timer</li>
+            <li>Switch down = closed · up = open</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Method</h2>
+          <ol class="steps">
+            <li><strong>Rinse &amp; prep.</strong> Rinse the filter, discard water, add grounds, level the bed. Start with the switch <em>closed</em> (down).</li>
+            <li><strong>Bloom — 0:00.</strong> Pour 50 g, swirl gently to saturate. Let it steep closed for 45 s.</li>
+            <li><strong>Immersion pour — 0:45.</strong> Pour steadily to 160 g total, keeping the switch closed. Give one gentle swirl.</li>
+            <li><strong>Open &amp; percolate — 1:15.</strong> Flip the switch <em>open</em> and let it begin draining as you pour.</li>
+            <li><strong>Final pulses — to 256 g.</strong> Add water in two pulses up to 256 g by 1:45, pouring in slow circles.</li>
+            <li><strong>Drawdown.</strong> Leave switch open; aim for the bed to run dry near 3:00. Swirl once, serve, and taste as it cools.</li>
+          </ol>
+        </section>
+      </div>
+
+    </div>
+  </article>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var KEY = 'zhc-theme';
+      // Load saved preference (defaults to dark)
+      try {
+        if (localStorage.getItem(KEY) === 'light') root.setAttribute('data-theme', 'light');
+      } catch (e) {}
+      btn.addEventListener('click', function () {
+        var isLight = root.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          root.removeAttribute('data-theme');
+          try { localStorage.setItem(KEY, 'dark'); } catch (e) {}
+        } else {
+          root.setAttribute('data-theme', 'light');
+          try { localStorage.setItem(KEY, 'light'); } catch (e) {}
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
